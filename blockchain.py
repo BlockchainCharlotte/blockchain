@@ -7,10 +7,13 @@ from uuid import uuid4
 import requests
 from flask import Flask, jsonify, request
 
+#TODO add wallet as seperate class that integrates with blockchain, expose api to wallet for sending receiving.
 
 class Blockchain(object):
     def __init__(self):
         self.current_transactions = []
+
+        #TODO create persistent chain with storage functions
         self.chain = []
         self.nodes = set()
 
@@ -100,6 +103,7 @@ class Blockchain(object):
         :return: <dict> New Block
         """
 
+        #TODO add check for valid transactions before adding to block (same function as below)
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
@@ -123,6 +127,7 @@ class Blockchain(object):
         :param amount: <int> Amount
         :return: <int> The index of the Block that will hold this transaction
         """
+        #TODO add check for valid transaction before adding to queue (same function as above)
         self.current_transactions.append({
             'sender': sender,
             'recipient': recipient,
@@ -157,6 +162,7 @@ class Blockchain(object):
         :param last_proof: <int>
         :return: <int>
         """
+        #TODO add dag implementation
 
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
@@ -198,12 +204,15 @@ def mine():
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
+
+    #TODO add block halving algorithm based on chain length
     blockchain.new_transaction(
         sender="0",
         recipient=node_identifier,
         amount=1,
     )
 
+    #TODO add slection algorithm for transactions assuming transactions in queue > block size limit
     # Forge the new Block by adding it to the chain
     block = blockchain.new_block(proof)
 
