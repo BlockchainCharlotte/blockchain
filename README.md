@@ -18,6 +18,7 @@ $ pip install pipenv
 ```
 $ pipenv --python=python3.6
 ```
+*Note: if you get an error here, try replacing 'python3.6' with the full path to your python executable.*
 
 4. Install requirements.  
 
@@ -34,7 +35,7 @@ $ pipenv install
 
 Another option for running this blockchain program is to use Docker.  Follow the instructions below to create a local Docker container:
 
-1. Clone this repository
+1. Clone this repository. *(Note: all you need is the Dockerfile.)*
 2. Build the docker container
 
 ```
