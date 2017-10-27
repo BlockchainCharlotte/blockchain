@@ -12,6 +12,11 @@ The Blockchain Charlotte devs are planning on using this fork as a learning tool
 ```
 $ pip install pipenv 
 ```
+if you have Python version >3 then run below command to install pipenv
+
+```
+$ pip3 install pipenv 
+```
 
 3. Create a _virtual environment_ and specify the Python version to use. 
 
