@@ -30,7 +30,9 @@ class Blockchain(object):
 
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
-
+    
+    #TODO pass the last block instead of the last proof to create an actual
+    #blockchain
     def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid
