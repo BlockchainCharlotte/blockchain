@@ -7,13 +7,15 @@ from uuid import uuid4
 import requests
 from flask import Flask, jsonify, request
 
-#TODO add wallet as seperate class that integrates with blockchain, expose api to wallet for sending receiving.
+# TODO add wallet as seperate class that integrates with blockchain,
+# expose api to wallet for sending receiving.
+
 
 class Blockchain(object):
     def __init__(self):
         self.current_transactions = []
 
-        #TODO create persistent chain with storage functions
+        # TODO create persistent chain with storage functions
         self.chain = []
         self.nodes = set()
 
@@ -30,9 +32,9 @@ class Blockchain(object):
 
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
-    
-    #TODO pass the last block instead of the last proof to create an actual
-    #blockchain
+
+    # TODO pass the last block instead of the last proof to create an actual
+    # blockchain
     def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid
@@ -89,7 +91,8 @@ class Blockchain(object):
                     max_length = length
                     new_chain = chain
 
-        # Replace our chain if we discovered a new, valid chain longer than ours
+        # Replace our chain if we discovered a new, valid chain longer than
+        # ours
         if new_chain:
             self.chain = new_chain
             return True
@@ -105,7 +108,8 @@ class Blockchain(object):
         :return: <dict> New Block
         """
 
-        #TODO add check for valid transactions before adding to block (same function as below)
+        # TODO add check for valid transactions before adding to block
+        # (same function as below)
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
@@ -120,23 +124,36 @@ class Blockchain(object):
         self.chain.append(block)
         return block
 
-    def new_transaction(self, sender, recipient, amount):
+    def new_transaction(self, sender, unspent_transactions, outputs,
+                        signed_hash=None):
         """
-        Creates a new transaction to go into the next mined Block
+        Creates a new transaction to go into the next mined Block.
+        Takes the senders public key, a list of unspent transactions,
+        a dictionary of output addresses with amounts and the signed hash_details.
 
-        :param sender: <str> Address of the Sender
-        :param recipient: <str> Address of the Recipient
-        :param amount: <int> Amount
+        Total amount of outputs should be less than or equal to the total amount
+        included in transactions in unspent_transactions.
+
+        :param sender: <str> Senders public key
+        :param unspent_transactions: <list> A list of unspent transactions to senders address
+        :param outputs: <dict> A dictionary of addresses and amounts to be sent to those address
         :return: <int> The index of the Block that will hold this transaction
         """
-        #TODO add check for valid transaction before adding to queue (same function as above)
+        # TODO add check for valid transaction before adding to queue
+        # (same function as above)
+
         transaction = {
-                    'timestamp': time(),
-                    'sender': sender,
-                    'recipient': recipient,
-                    'amount': amount,
-                }
-        transaction['hash'] = self.hash(transaction)
+                 'timestamp': time(),
+                 'sender': sender,
+                 'unspent_transactions': unspent_transactions,
+                 'outputs': outputs, # Format: {'recipient': 1,
+                                     #          'recipient2': 10}
+                 'signed_hash': signed_hash,
+        }
+        hash_details = {key: transaction[key] for key in ['outputs',
+                                                          'sender',
+                                                          'unspent_transactions']}
+        transaction['hash'] = self.hash(hash_details)
         self.current_transactions.append(transaction)
 
         return self.last_block['index'] + 1
@@ -154,20 +171,22 @@ class Blockchain(object):
         :return: <str>
         """
 
-        # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
+        # We must make sure that the Dictionary is Ordered,
+        # or we'll have inconsistent hashes
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
     def proof_of_work(self, last_proof):
         """
         Simple Proof of Work Algorithm:
-         - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
+         - Find a number p' such that hash(pp') contains leading 4 zeroes,
+                                                where p is the previous p'
          - p is the previous proof, and p' is the new proof
 
         :param last_proof: <int>
         :return: <int>
         """
-        #TODO add dag implementation
+        # TODO add dag implementation
 
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
@@ -210,14 +229,15 @@ def mine():
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
 
-    #TODO add block halving algorithm based on chain length
+    # TODO add block halving algorithm based on chain length
     blockchain.new_transaction(
-        sender="0",
-        recipient=node_identifier,
-        amount=1,
+        sender=node_identifier,
+        unspent_transactions=["coinbase"],
+        outputs={node_identifier: 100}
     )
 
-    #TODO add slection algorithm for transactions assuming transactions in queue > block size limit
+    # TODO add slection algorithm for transactions assuming transactions in
+    # queue > block size limit
     # Forge the new Block by adding it to the chain
     block = blockchain.new_block(proof)
 
@@ -236,12 +256,15 @@ def new_transaction():
     values = request.get_json()
 
     # Check that the required fields are in the POST'ed data
-    required = ['sender', 'recipient', 'amount']
+    required = ['sender', 'unspent_transactions', 'outputs', 'signed_hash']
     if not all(k in values for k in required):
         return 'Missing values', 400
 
     # Create a new Transaction
-    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
+    index = blockchain.new_transaction(values['sender'],
+                                       values['unspent_transactions'],
+                                       values['outputs'],
+                                       values['signed_hash'])
 
     response = {'message': f'Transaction will be added to Block {index}'}
     return jsonify(response), 201
@@ -296,7 +319,8 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
+    parser.add_argument('-p', '--port', default=5000,
+                        type=int, help='port to listen on')
     args = parser.parse_args()
     port = args.port
 
