@@ -110,6 +110,7 @@ class Blockchain(object):
 
         # TODO add check for valid transactions before adding to block
         # (same function as below)
+        # TODO add signed blockhash as part of block
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
@@ -129,14 +130,15 @@ class Blockchain(object):
         """
         Creates a new transaction to go into the next mined Block.
         Takes the senders public key, a list of unspent transactions,
-        a dictionary of output addresses with amounts and the signed hash_details.
+        a dictionary of output addresses with amounts and the signed
+        hash_details.
 
-        Total amount of outputs should be less than or equal to the total amount
-        included in transactions in unspent_transactions.
+        Total amount of outputs should be less than or equal to
+        the total amount included in transactions in unspent_transactions.
 
         :param sender: <str> Senders public key
-        :param unspent_transactions: <list> A list of unspent transactions to senders address
-        :param outputs: <dict> A dictionary of addresses and amounts to be sent to those address
+        :param unspent_transactions: <list> A list of unspent transactions
+        :param outputs: <dict> A dictionary of addresses and amounts
         :return: <int> The index of the Block that will hold this transaction
         """
         # TODO add check for valid transaction before adding to queue
