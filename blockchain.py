@@ -136,7 +136,7 @@ class Blockchain(object):
                     'recipient': recipient,
                     'amount': amount,
                 }
-        transaction['hash'] = self.hash(self.hash(transaction))
+        transaction['hash'] = self.hash(transaction)
         self.current_transactions.append(transaction)
 
         return self.last_block['index'] + 1
