@@ -130,11 +130,14 @@ class Blockchain(object):
         :return: <int> The index of the Block that will hold this transaction
         """
         #TODO add check for valid transaction before adding to queue (same function as above)
-        self.current_transactions.append({
-            'sender': sender,
-            'recipient': recipient,
-            'amount': amount,
-        })
+        transaction = {
+                    'timestamp': time(),
+                    'sender': sender,
+                    'recipient': recipient,
+                    'amount': amount,
+                }
+        transaction['hash'] = self.hash(self.hash(transaction))
+        self.current_transactions.append(transaction)
 
         return self.last_block['index'] + 1
 
