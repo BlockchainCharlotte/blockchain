@@ -9,14 +9,14 @@ The Blockchain Charlotte devs are planning on using this fork as a learning tool
 2. Setup a virtual environment using the method of your choice. (direnv, virtualenv, pipenv, etc...)
 3. Activate environment
 4. Install requirements
-'''
+```
 $ pip install -r requirements.txt
-'''
+```
 5. Run the server:
-'''
+```
 $ python blockchain.py
-'''
-##Pipenv
+```
+## Pipenv
 1. Make sure [Python 3.6+](https://www.python.org/downloads/) is installed. 
 2. Install [pipenv](https://github.com/kennethreitz/pipenv). 
 
