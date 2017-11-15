@@ -12,8 +12,11 @@ from flask import Flask, jsonify, request
 
 
 class Blockchain(object):
-    def __init__(self):
-        self.current_transactions = []
+    def __init__(self, genesis_transactions=None):
+        if genesis_transactions is not None:
+            self.current_transactions = genesis_transactions
+        else:
+            self.current_transactions = []
 
         # TODO create persistent chain with storage functions
         self.chain = []
