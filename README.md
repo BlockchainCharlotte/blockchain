@@ -72,6 +72,39 @@ $ docker run --rm -p 82:5000 blockchain
 $ docker run --rm -p 83:5000 blockchain
 ```
 
+## API Docs
+* Mine: GET
+
+```
+ /mine
+```
+
+* New Transactions: POST {sender, unspent_transactions, outputs, signed_hash}
+
+
+```
+ /transactions/new
+ ```
+
+* Return Blockchain: GET
+
+```
+ /chain
+```
+
+* Register Nodes: POST a list of nodes
+
+```
+ /nodes/register
+```
+
+
+* Resolve Conflicts between miners: GET
+
+```
+ /nodes/resolve
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

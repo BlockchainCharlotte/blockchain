@@ -108,3 +108,6 @@ ENV/
 
 # Workflow files
 *temp.py*
+
+# Testing files
+wallet/testingaddr.txt

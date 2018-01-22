@@ -5,7 +5,9 @@ import pickle
 
 
 class Wallet(object):
-
+    """
+    A Basic Heirarchial deterministic wallet class.
+    """
     def __init__(self):
         self.key_pair_address = []  # List of tuples (private_key,
                                  #                 public_key,
@@ -45,7 +47,11 @@ class Wallet(object):
         pass
 
     def generate_address(self):
-        key_pair_address = addrgen()
+        if len(key_pair_address) == 0:
+            key_pair_address = addrgen()
+        else:
+            sd = len(self.key_pair_address) - 1
+            key_pair_address = addrgen(seed=sd[0])
         self.key_pair_address.append(key_pair_address)
         self.active_kpa = key_pair_address
         print(key_pair_address)

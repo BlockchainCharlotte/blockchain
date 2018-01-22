@@ -4,12 +4,19 @@ import os
 import codecs
 import hashlib
 import base58
+import random
+import secrets
 
-
-def addrgen():
+def addrgen(seed=None):
     """Returns private_key, public_key, and btc_address"""
     # 0 - Having a private ECDSA key
-    private_key = hexlify(os.urandom(32))
+    # create the private key randomly or with a seed
+    if seed != None:
+        random.seed(a=seed)
+        rand_number = random.getrandbits(32)
+    else:
+        rand_number = os.urandom(32)
+    private_key = hexlify(rand_number)
     sk = ecdsa.SigningKey.from_string(codecs.decode(private_key,
                                                     "hex"),
                                       curve=ecdsa.SECP256k1)
@@ -48,3 +55,4 @@ if __name__ == '__main__':
     print(f'Private Key: {private_key}')
     print(f'Public_Key: {public_key}')
     print(f'BTC Address: {btc_address}')
+    print("_________________________________________________________________________________")
