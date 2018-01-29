@@ -6,14 +6,16 @@ import hashlib
 import base58
 import random
 import secrets
+import sys
 
+# TODO Update to use python-mnemonic
 def addrgen(seed=None):
     """Returns private_key, public_key, and btc_address"""
     # 0 - Having a private ECDSA key
     # create the private key randomly or with a seed
-    if seed != None:
-        random.seed(a=seed)
-        rand_number = random.getrandbits(32)
+    if seed != None and seed != '':
+        random.seed(a=str(seed))
+        rand_number = random.getrandbits(256).to_bytes(32, byteorder='big')
     else:
         rand_number = os.urandom(32)
     private_key = hexlify(rand_number)
@@ -51,8 +53,25 @@ def addrgen(seed=None):
 
 
 if __name__ == '__main__':
-    private_key, public_key, btc_address = addrgen()
-    print(f'Private Key: {private_key}')
-    print(f'Public_Key: {public_key}')
-    print(f'BTC Address: {btc_address}')
-    print("_________________________________________________________________________________")
+    try:
+        seed = sys.argv[1]
+    except:
+        seed = None
+    def print_wallet(seed):
+        print('<pre>')
+        print(f'seed: {seed}')
+        private_key, public_key, btc_address = addrgen(seed=seed)
+        print(f'Private Key: {private_key}')
+        print(f'Public_Key: {public_key}')
+        print(f'BTC Address: {btc_address}')
+        print("_________________________________________________________________________________")
+        print('</pre>')
+        return  private_key
+
+    try:
+        rang = int(sys.argv[2])
+        sd = seed
+        for x in range(rang):
+            sd = print_wallet(sd)
+    except:
+        print_wallet(seed)
