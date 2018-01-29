@@ -3,7 +3,7 @@ import json
 from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
-
+import pickle
 import requests
 from flask import Flask, jsonify, request
 
@@ -12,6 +12,7 @@ from flask import Flask, jsonify, request
 
 
 class Blockchain(object):
+
     def __init__(self, genesis_transactions=None):
         if genesis_transactions is not None:
             self.current_transactions = genesis_transactions
@@ -128,6 +129,7 @@ class Blockchain(object):
         self.chain.append(block)
         return block
 
+    # TODO update to submit transaction
     def new_transaction(self, sender, unspent_transactions, outputs,
                         signed_hash=None):
         """
@@ -213,6 +215,25 @@ class Blockchain(object):
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
 
+    def load_snapshot(self, file_name='snapshot.dat'):
+        """
+        Load blockchain from backup file
+        """
+        snapshot_f = open(file_name, 'rb')
+        snapchain = pickle.load(snaped_f)
+        snapshot_f.close()
+        if len(snapchain) > len(self.chain):
+            self.chain = snapchain
+        return None
+
+    def create_snapshot(self, file_name='snapshot.dat'):
+        """
+        Write blockchain to file
+        """
+        snapshot = open(file_name, 'wb')
+        pickle.dump(self.chain, snapshot)
+        snapshot.close()
+        return None
 
 # Instantiate the Node
 app = Flask(__name__)
