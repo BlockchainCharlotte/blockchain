@@ -4,7 +4,7 @@ from threading import Thread
 import time
 
 
-class GossipNode:
+class Gossip:
     # hold infected nodes
     infected_nodes = []
 
@@ -47,7 +47,7 @@ class GossipNode:
             # from the list of connected nodes and
             # add it to the list of infected nodes
             self.connected_nodes.remove(address[1])
-            GossipNode.infected_nodes.append(address[1])
+            self.infected_nodes.append(address[1])
 
             # sleep for 2 seconds in order to show difference in time
             time.sleep(2)
@@ -67,7 +67,7 @@ class GossipNode:
             selected_port = random.choice(self.connected_nodes)
 
             print("Connected nodes =>", self.connected_nodes)
-            print("Infected nodes =>", GossipNode.infected_nodes)
+            print("Infected nodes =>", Gossip.infected_nodes)
             print("Port selected is [{0}]".format(selected_port))
 
             # For connectionless protocol, use 'sendto' to transmit the UDP message
@@ -77,11 +77,11 @@ class GossipNode:
             # from the list of connected nodes and
             # add it to the list of infected nodes
             self.connected_nodes.remove(selected_port)
-            GossipNode.infected_nodes.append(selected_port)
+            self.infected_nodes.append(selected_port)
 
             print("Message: '{0}' sent to [{1}].".format(message.decode('ascii'), selected_port))
             print("Connected nodes =>", self.connected_nodes)
-            print("Infected nodes =>", GossipNode.infected_nodes)
+            print("Infected nodes =>", Gossip.infected_nodes)
             print("-"*50)
             time.sleep(2)
             print("\n")
